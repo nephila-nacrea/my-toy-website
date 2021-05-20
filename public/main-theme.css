@@ -1,0 +1,6 @@
+.error {
+    color:tomato;
+    background-color: pink;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    border: 1px solid tomato;
+}
