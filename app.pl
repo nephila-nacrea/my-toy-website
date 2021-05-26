@@ -1,4 +1,7 @@
+use lib 'lib';
+
 use Mojolicious::Lite -signatures;
+use MTW::User;
 
 get '/' => sub($c) {
     $c->redirect_to('/form');
@@ -17,6 +20,8 @@ post '/form' => sub($c) {
         $c->render( template => 'form' );
         return;
     }
+
+    MTW::User::add( $c->param('username'), $c->param('email') );
 
     $c->redirect_to('/form');
 };
