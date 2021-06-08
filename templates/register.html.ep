@@ -2,6 +2,7 @@
     <link rel="stylesheet" href="/main-theme.css">
 </head>
 <body>
+    <h1>Register</h1>
     <% if (%$errors) { %>
         <div>
             <% for my $key (keys %$errors) { %>
@@ -17,6 +18,14 @@
         <div>
             <label for="email">Email</label>
             <input type="email" name="email">
+        </div>
+        <div>
+            <label for="password">Password</label>
+            <input type="password" name="password">
+        </div>
+        <div>
+            <label for="password_confirm">Confirm password</label>
+            <input type="password" name="password_confirm">
         </div>
         <div>
             <input type="submit" value="Submit">

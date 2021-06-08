@@ -9,7 +9,7 @@ use Moo;
 use feature 'signatures';
 use namespace::clean;
 
-sub add ( $username, $email ) {
+sub add ( $username, $email, $password ) {
     my $dbh = DBI->connect(
         'dbi:SQLite:dbname=/home/vmihell-hale/my-toy-website/my_toy_db');
 
