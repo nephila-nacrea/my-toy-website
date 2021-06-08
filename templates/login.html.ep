@@ -1,0 +1,29 @@
+<head>
+    <link rel="stylesheet" href="/main-theme.css">
+</head>
+<body>
+    <h1>Log in</h1>
+    <% if (%$errors) { %>
+        <div>
+            <% for my $key (keys %$errors) { %>
+                <div class="error"><%= $key %></div>
+            <% } %>
+        </div>
+    <% } %>
+    <form method="post">
+        <div>
+            <label for="email">Email</label>
+            <input type="email" name="email">
+        </div>
+        <div>
+            <label for="password">Password</label>
+            <input type="password" name="password">
+        </div>
+        <div>
+            <input type="submit" value="Submit">
+        </div>
+    </form>
+    <div>
+        <a href="/register">Register here</a>
+    </div>
+</body>

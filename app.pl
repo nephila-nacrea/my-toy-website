@@ -4,19 +4,43 @@ use Mojolicious::Lite -signatures;
 use MTW::User;
 
 get '/login' => sub ($c) {
-    # TODO
-    # Redirect if logged in
-    # Show template if not logged in
+    if ( $c->user_creds->{username} ) {
+        $c->redirect_to('/home');
+    }
+
+    $c->render( template => 'login', errors => {} );
 };
 
 post '/login' => sub ($c) {
-    # TODO
+    my $user
+        = MTW::User->new->get( $c->param('email'), $c->param('password') );
+
+    if ( my $err = $user->{error} ) {
+        $c->render( template => 'login', errors => { $err => 1 } );
+        return;
+    }
+
+    # Set cookies
+    # TODO Make more secure
+    $c->cookie( username => $user->{username} );
+    $c->cookie( email    => $user->{email} );
+
+    $c->redirect_to('/home');
+};
+
+get '/logout' => sub ($c) {
+    $c->cookie( username => undef );
+    $c->cookie( email    => undef );
+
+    $c->redirect_to('/login');
 };
 
 get '/home' => sub ($c) {
-    # TODO
-    # Redirect if not logged in
-    # Show template if logged in
+    if ( !$c->user_creds->{username} ) {
+        $c->redirect_to('/login');
+    }
+
+    $c->render( template => 'home', errors => {} );
 };
 
 get '/register' => sub($c) {
@@ -32,7 +56,7 @@ post '/register' => sub($c) {
         return;
     }
 
-    MTW::User::add(
+    MTW::User->new->add(
         $c->param('username'),
         $c->param('email'), $c->param('password'),
     );
@@ -42,7 +66,14 @@ post '/register' => sub($c) {
     $c->cookie( username => $c->param('username') );
     $c->cookie( email    => $c->param('email') );
 
-    $c->redirect_to('/user');
+    $c->redirect_to('/home');
+};
+
+helper user_creds => sub ($c) {
+    return {
+        username => $c->cookie('username'),
+        email    => $c->cookie('email'),
+    };
 };
 
 helper validate => sub ($c) {
@@ -58,7 +89,7 @@ helper validate => sub ($c) {
         $errors{"error_empty_$param_key"} = 1 unless $param_value;
     }
 
-    $errors{"error_mismatched_passwords"} = 1
+    $errors{'error_mismatched_passwords'} = 1
         if $c->param('password') ne $c->param('password_confirm');
 
     return \%errors;

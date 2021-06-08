@@ -9,11 +9,23 @@ use Moo;
 use feature 'signatures';
 use namespace::clean;
 
-sub add ( $username, $email, $password ) {
-    my $dbh = DBI->connect(
-        'dbi:SQLite:dbname=/home/vmihell-hale/my-toy-website/my_toy_db');
+has dbh => (
+    is      => 'ro',
+    default => sub {
+        DBI->connect(
+            'dbi:SQLite:dbname=/home/vmihell-hale/my-toy-website/my_toy_db');
+    },
+);
 
-    $dbh->do(
+# sub _build_dbh ($self) {
+#     $self->dbh(
+#         DBI->connect(
+#             'dbi:SQLite:dbname=/home/vmihell-hale/my-toy-website/my_toy_db')
+#     );
+# }
+
+sub add ( $self, $username, $email, $password ) {
+    $self->dbh->do(
         'INSERT INTO users
                 ( username, email, created )
          VALUES ( ?,        ?,     ?       )',
@@ -22,6 +34,25 @@ sub add ( $username, $email, $password ) {
         $email,
         time,
     );
+}
+
+sub get ( $self, $email, $password ) {
+    my $res = $self->dbh->selectrow_arrayref(
+        'SELECT username, password
+           FROM users
+          WHERE email = ?',
+        { Slice => {} },
+        $email,
+    );
+
+    if ( $res->{password} ne $password ) {
+        return { error => 'error_mismatched_passwords' };
+    }
+
+    return {
+        email    => $email,
+        username =>
+    };
 }
 
 1;

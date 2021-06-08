@@ -1,0 +1,7 @@
+<head>
+    <link rel="stylesheet" href="/main-theme.css">
+</head>
+<body>
+    <h1>Home</h1>
+    <div><a href="/logout">Log out</a></div>
+</body>
